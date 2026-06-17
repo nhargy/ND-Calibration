@@ -38,6 +38,9 @@ G4bool NDSensitiveDetector::ProcessHits(G4Step *aStep, G4TouchableHistory *ROhis
     G4float fK1    = preStepPoint->GetKineticEnergy();
     G4float fK2    = postStepPoint->GetKineticEnergy();
 
+    // Energy Deposition
+    G4double fEdep = aStep->GetTotalEnergyDeposit();
+
     // Build Records Table
     G4AnalysisManager *analysisManager = G4AnalysisManager::Instance();
     analysisManager->FillNtupleIColumn(0, 0,  eventID);
@@ -51,6 +54,7 @@ G4bool NDSensitiveDetector::ProcessHits(G4Step *aStep, G4TouchableHistory *ROhis
     analysisManager->FillNtupleDColumn(0, 8, fZ2);
     analysisManager->FillNtupleDColumn(0, 9, fK1);
     analysisManager->FillNtupleDColumn(0, 10, fK2);
+    analysisManager->FillNtupleDColumn(0, 11, fEdep);
     analysisManager->AddNtupleRow(0);
 
     return true;

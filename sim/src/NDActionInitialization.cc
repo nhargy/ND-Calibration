@@ -1,8 +1,10 @@
 #include "NDActionInitialization.hh"
 
-NDActionInitialization::NDActionInitialization(const G4String& outputFilePath):fOutputFilePath(outputFilePath){
-
-}
+NDActionInitialization::NDActionInitialization(
+    const G4String& outputFilePath
+)
+:fOutputFilePath(outputFilePath)
+{}
 
 NDActionInitialization::~NDActionInitialization(){
 

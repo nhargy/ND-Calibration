@@ -30,24 +30,38 @@ std::map<G4String, G4double> NDDetectorConstruction::m_hGeometryParameters;
 
 NDDetectorConstruction::NDDetectorConstruction()
 {
+    ApplyMessengers();
 }
 
 NDDetectorConstruction::~NDDetectorConstruction()
 {
 }
 
+void NDDetectorConstruction::ApplyMessengers()
+{
+    fMessengerWall = new G4GenericMessenger(this, "/wall/", "wall");
+
+    fMessengerWall->DeclareProperty(
+        "wall_thickness", 
+        wall_thickness, 
+        "wall_thickness");
+
+    // Default Values
+    wall_thickness = 500.;
+}
+
 void NDDetectorConstruction::DefineGeometryParameters()
 {
     //============================ Laboratory =================================
-    m_hGeometryParameters["Lab_Width"]  = 4000. *mm;
-    m_hGeometryParameters["Lab_Length"] = 4000. *mm;
-    m_hGeometryParameters["Lab_Height"] = 4000. *mm;
+    m_hGeometryParameters["Lab_Width"]  = 5100. *mm;
+    m_hGeometryParameters["Lab_Length"] = 5100. *mm;
+    m_hGeometryParameters["Lab_Height"] = 5100. *mm;
 
     //============================= Arik ND ===================================
     m_hGeometryParameters["Arik_ND_oD"] = 25.4 *mm;
-    m_hGeometryParameters["Arik_ND_iD"] = 20.4 *mm;
+    m_hGeometryParameters["Arik_ND_iD"] = 22.4 *mm;
     m_hGeometryParameters["Arik_ND_oL"] = 50.8 *mm;
-    m_hGeometryParameters["Arik_ND_iL"] = 45.8 *mm;
+    m_hGeometryParameters["Arik_ND_iL"] = 47.8 *mm;
 
     //============================= Roi ND ====================================
     m_hGeometryParameters["Roi_ND_oD"] = 76.2 *mm;
@@ -56,14 +70,14 @@ void NDDetectorConstruction::DefineGeometryParameters()
     m_hGeometryParameters["Roi_ND_iL"] = 71.2 *mm;
 
     //============================ Floor ======================================
-    m_hGeometryParameters["Floor_Width"]  = 3999. *mm;
-    m_hGeometryParameters["Floor_Length"] = 3999. *mm;
-    m_hGeometryParameters["Floor_Height"] = 100. *mm;
+    m_hGeometryParameters["Floor_Width"]  = 4999. *mm;
+    m_hGeometryParameters["Floor_Length"] = 4999. *mm;
+    m_hGeometryParameters["Floor_Height"] = 200. *mm;
 
     //============================ Wall =======================================
-    m_hGeometryParameters["Wall_Width"]  = 100. *mm;
-    m_hGeometryParameters["Wall_Length"] = 3999. *mm;
-    m_hGeometryParameters["Wall_Height"] = 2000. *mm;
+    m_hGeometryParameters["Wall_Width"]  = wall_thickness *mm;
+    m_hGeometryParameters["Wall_Length"] = 4999. *mm;
+    m_hGeometryParameters["Wall_Height"] = 3200. *mm;
 }
 
 void NDDetectorConstruction::DefineMaterials()
@@ -200,6 +214,21 @@ void NDDetectorConstruction::ConstructArikNDs()
         Steel,
         "logic_ArikND"
     );
+
+    G4Tubs* solid_ArikND_liq = new G4Tubs(
+        "solid_ArikND_liq",
+        0.,
+        Arik_ND_iD/2,
+        Arik_ND_iL/2,
+        0.  *deg,
+        360.*deg
+    );
+
+    logic_ArikND_liq = new G4LogicalVolume(
+        solid_ArikND_liq,
+        NE213,
+        "logic_ArikND_liq"
+    );
     
     G4double r1_ArikND     = 990. *mm;
     G4double theta1_ArikND = 57. *deg ;
@@ -247,13 +276,31 @@ void NDDetectorConstruction::ConstructArikNDs()
         true
     );
 
+    phys_ArikND_liq = new G4PVPlacement(
+        0,
+        G4ThreeVector(0,0,0),
+        logic_ArikND_liq,
+        "phys_ArikND_liq",
+        logic_ArikND,
+        false,
+        0,
+        true
+    );
+
     /* VisAttributes */
-    auto colour_ArikND = G4Colour(0.9, 1., 1., 1.);
+    auto colour_ArikND = G4Colour(0.9, 1., 1., 0.3);
     G4VisAttributes *vis_ArikND = new G4VisAttributes(colour_ArikND);
     vis_ArikND   ->SetVisibility(true);
     vis_ArikND   ->SetForceSolid(true);
     vis_ArikND   ->SetForceAuxEdgeVisible(true);
     logic_ArikND ->SetVisAttributes(vis_ArikND);
+
+    auto colour_ArikND_liq = G4Colour(0.1, 0.1, 1., 0.7);
+    G4VisAttributes *vis_ArikND_liq = new G4VisAttributes(colour_ArikND_liq);
+    vis_ArikND_liq   ->SetVisibility(true);
+    vis_ArikND_liq   ->SetForceSolid(true);
+    vis_ArikND_liq   ->SetForceAuxEdgeVisible(true);
+    logic_ArikND_liq ->SetVisAttributes(vis_ArikND_liq);
 }
 
 void NDDetectorConstruction::ConstructRoom()
@@ -304,7 +351,7 @@ void NDDetectorConstruction::ConstructRoom()
         "logic_Wall"
     );
 
-    auto vector_Wall = G4ThreeVector(1855.,0., -1400 + - Floor_Height/2 + (Wall_Height/2));
+    auto vector_Wall = G4ThreeVector(1850. + (Wall_Width/2),0., -1400 + (Wall_Height/2));
     phys_Wall = new G4PVPlacement(
         0, 
         vector_Wall, 
@@ -329,5 +376,5 @@ void NDDetectorConstruction::ConstructRoom()
 void NDDetectorConstruction::ConstructSDandField()
 {
     NDSensitiveDetector *sensDet = new NDSensitiveDetector("SensitveDetector");
-    logic_ArikND->SetSensitiveDetector(sensDet);
+    logic_ArikND_liq->SetSensitiveDetector(sensDet);
 }

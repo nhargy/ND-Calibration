@@ -1,0 +1,7 @@
+/control/verbose 1
+/run/verbose 1
+
+/wall/wall_thickness 200
+
+/run/initialize
+/process/had/rdm/thresholdForVeryLongDecayTime 1.0e+3 year

@@ -10,7 +10,9 @@
 class NDActionInitialization : public G4VUserActionInitialization
 {
 public:
-    NDActionInitialization(const G4String& outputFilePath = "output.root");
+    NDActionInitialization(
+        const G4String& outputFilePath = "output.root"
+    );
     ~NDActionInitialization();
 
     void Build() const override;

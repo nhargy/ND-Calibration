@@ -9,6 +9,7 @@
 class G4LogicalVolume;
 class G4VPhysicalVolume;
 class G4Material;
+class G4GenericMessenger;
 
 class NDDetectorConstruction : public G4VUserDetectorConstruction
 {
@@ -29,6 +30,7 @@ private:
     void ConstructRoom();
 
     virtual void ConstructSDandField();
+    void ApplyMessengers();
 
     static std::map<G4String, G4double> m_hGeometryParameters;
 
@@ -44,9 +46,11 @@ private:
     G4VPhysicalVolume* phys_Wall  = nullptr;
 
     /* NDs */
-    G4LogicalVolume*   logic_ArikND = nullptr;
-    G4VPhysicalVolume* phys_ArikND1 = nullptr;
-    G4VPhysicalVolume* phys_ArikND2 = nullptr;
+    G4LogicalVolume*   logic_ArikND     = nullptr;
+    G4VPhysicalVolume* phys_ArikND1     = nullptr;
+    G4VPhysicalVolume* phys_ArikND2     = nullptr;
+    G4LogicalVolume*   logic_ArikND_liq = nullptr;
+    G4VPhysicalVolume* phys_ArikND_liq  = nullptr;
 
     // Material definitions
     G4Material* Air      = nullptr;
@@ -54,6 +58,10 @@ private:
     G4Material* EJ309    = nullptr;
     G4Material* Concrete = nullptr;
     G4Material* Steel    = nullptr;
+
+    // Messengers
+    G4GenericMessenger* fMessengerWall = nullptr;
+    G4double wall_thickness = 0.;
 };
 
 #endif

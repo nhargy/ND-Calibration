@@ -12,7 +12,7 @@
 #include "NDActionInitialization.hh"
 
 // GEANT4 Includes
-#include "G4RunManagerFactory.hh"
+#include "G4RunManager.hh"
 #include "G4VisManager.hh"
 #include "G4UImanager.hh"
 #include "G4UIExecutive.hh"
@@ -76,7 +76,6 @@ int main(int argc, char** argv) {
             return 0;
         }
         else {
-            // Optional: treat bare first arg as macro for backward compatibility
             if (macroFile.empty()) {
                 macroFile = argv[i];
             } else {
@@ -92,7 +91,7 @@ int main(int argc, char** argv) {
     // Mandatory initialisation classes
     runManager->SetUserInitialization(new NDPhysicsList());
     runManager->SetUserInitialization(new NDDetectorConstruction());
-    runManager->SetUserInitialization(new NDActionInitialization());
+    runManager->SetUserInitialization(new NDActionInitialization(outputFile));
 
     G4VisManager *visManager = new G4VisExecutive();
     visManager->Initialize();
@@ -110,12 +109,10 @@ int main(int argc, char** argv) {
     else
     {
         G4String command = "/control/execute ../macros/";
-        //G4String fileName = argv[1];
         UImanager->ApplyCommand(command + macroFile);
 
         runManager->BeamOn(nPrimaries);
     }
-
     delete runManager;
     return 0;
 }

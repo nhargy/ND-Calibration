@@ -19,7 +19,8 @@ def read_root_file(
                     'fY2', 
                     'fZ2', 
                     'fK1',
-                    'fK2'
+                    'fK2',
+                    'fEdep'
                     ]
         
         data = tree.arrays(
