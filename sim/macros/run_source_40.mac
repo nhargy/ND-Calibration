@@ -1,0 +1,8 @@
+/control/verbose 1
+/run/verbose 1
+
+/geo/wall_thickness 400
+/geo/source_iD 40
+
+/run/initialize
+/process/had/rdm/thresholdForVeryLongDecayTime 1.0e+3 year

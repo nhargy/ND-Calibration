@@ -67,6 +67,7 @@ private:
     // Messengers
     G4GenericMessenger* fMessengerWall = nullptr;
     G4double wall_thickness = 0.;
+    G4double source_iD      = 0.;
 };
 
 #endif

@@ -39,15 +39,21 @@ NDDetectorConstruction::~NDDetectorConstruction()
 
 void NDDetectorConstruction::ApplyMessengers()
 {
-    fMessengerWall = new G4GenericMessenger(this, "/wall/", "wall");
+    fMessengerGeo = new G4GenericMessenger(this, "/geo/", "geo");
 
-    fMessengerWall->DeclareProperty(
+    fMessengerGeo->DeclareProperty(
         "wall_thickness", 
         wall_thickness, 
         "wall_thickness");
 
+    fMessengerGeo->DeclareProperty(
+        "source_iD", 
+        source_iD, 
+        "source_iD");
+
     // Default Values
     wall_thickness = 500.;
+    source_iD      = 80.;
 }
 
 void NDDetectorConstruction::DefineGeometryParameters()
@@ -81,7 +87,7 @@ void NDDetectorConstruction::DefineGeometryParameters()
 
     //======================== == Source ======================================
     m_hGeometryParameters["Source_oD"] = 100. *mm;
-    m_hGeometryParameters["Source_iD"] = 10.  *mm;
+    m_hGeometryParameters["Source_iD"] = source_iD  *mm;
     m_hGeometryParameters["Source_L"]  = 120.  *mm;
 
 }
