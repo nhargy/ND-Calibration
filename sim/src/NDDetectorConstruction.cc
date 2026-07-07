@@ -59,9 +59,9 @@ void NDDetectorConstruction::DefineGeometryParameters()
 
     //============================= Arik ND ===================================
     m_hGeometryParameters["Arik_ND_oD"] = 25.4 *mm;
-    m_hGeometryParameters["Arik_ND_iD"] = 22.4 *mm;
+    m_hGeometryParameters["Arik_ND_iD"] = 24.4 *mm;
     m_hGeometryParameters["Arik_ND_oL"] = 50.8 *mm;
-    m_hGeometryParameters["Arik_ND_iL"] = 47.8 *mm;
+    m_hGeometryParameters["Arik_ND_iL"] = 49.8 *mm;
 
     //============================= Roi ND ====================================
     m_hGeometryParameters["Roi_ND_oD"] = 76.2 *mm;
@@ -78,6 +78,12 @@ void NDDetectorConstruction::DefineGeometryParameters()
     m_hGeometryParameters["Wall_Width"]  = wall_thickness *mm;
     m_hGeometryParameters["Wall_Length"] = 4999. *mm;
     m_hGeometryParameters["Wall_Height"] = 3200. *mm;
+
+    //======================== == Source ======================================
+    m_hGeometryParameters["Source_oD"] = 100. *mm;
+    m_hGeometryParameters["Source_iD"] = 10.  *mm;
+    m_hGeometryParameters["Source_L"]  = 120.  *mm;
+
 }
 
 void NDDetectorConstruction::DefineMaterials()
@@ -157,6 +163,7 @@ G4VPhysicalVolume* NDDetectorConstruction::Construct()
     ConstructLab();
     ConstructArikNDs();
     ConstructRoom();
+    ConstructSource();
 
     return phys_Lab;
 }
@@ -324,7 +331,7 @@ void NDDetectorConstruction::ConstructRoom()
 
     auto vector_Floor = G4ThreeVector(0.,0., -1400 - Floor_Height/2);
     phys_Floor = new G4PVPlacement(
-        0, 
+        0,
         vector_Floor, 
         logic_Floor, 
         "phys_Floor", 
@@ -346,7 +353,7 @@ void NDDetectorConstruction::ConstructRoom()
     );
 
     logic_Wall = new G4LogicalVolume(
-        solid_Wall, 
+        solid_Wall,
         Concrete, 
         "logic_Wall"
     );
@@ -359,7 +366,7 @@ void NDDetectorConstruction::ConstructRoom()
         "phys_Wall", 
         logic_Lab, 
         false, 
-        0, 
+        0,
         true
     );
 
@@ -371,6 +378,51 @@ void NDDetectorConstruction::ConstructRoom()
     vis_Concrete   ->SetForceAuxEdgeVisible(true);
     logic_Floor ->SetVisAttributes(vis_Concrete);
     logic_Wall ->SetVisAttributes(vis_Concrete);
+}
+
+void NDDetectorConstruction::ConstructSource()
+{
+    G4double Source_oD = GetGeometryParameter("Source_oD");
+    G4double Source_iD = GetGeometryParameter("Source_iD");
+    G4double Source_L  = GetGeometryParameter("Source_L");
+
+    G4Tubs* solid_Source = new G4Tubs(
+        "solid_Source",
+        Source_iD/2,
+        Source_oD/2,
+        Source_L/2,
+        0.  *deg,
+        360.*deg
+    );
+
+    logic_Source = new G4LogicalVolume(
+        solid_Source,
+        Steel,
+        "logic_Source"
+    );
+
+    auto rotTheta3 = new G4RotationMatrix();
+    rotTheta3->rotateY(90.0 *deg);
+    /*rotTheta3->rotateX(-theta2_ArikND);*/
+
+    phys_Source = new G4PVPlacement(
+        rotTheta3,
+        G4ThreeVector(0,0,0),
+        logic_Source,
+        "phys_Source",
+        logic_Lab,
+        false,
+        0,
+        true
+    );
+
+    /* VisAttributes */
+    auto colour_Source = G4Colour(0., 1., 0., 1.);
+    G4VisAttributes *vis_Source = new G4VisAttributes(colour_Source);
+    vis_Source   ->SetVisibility(true);
+    vis_Source   ->SetForceSolid(true);
+    vis_Source   ->SetForceAuxEdgeVisible(true);
+    logic_Source ->SetVisAttributes(vis_Source);
 }
 
 void NDDetectorConstruction::ConstructSDandField()

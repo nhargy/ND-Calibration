@@ -27,7 +27,7 @@ NDPrimaryGenerator::~NDPrimaryGenerator()
 
 G4ThreeVector NDPrimaryGenerator::GetNeutronDirection()
 {
-    auto P0 = [](G4double /*x*/) -> G4double
+    auto P0 = [](G4double) -> G4double
     {
         return 1.0;
     };

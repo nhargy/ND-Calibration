@@ -28,6 +28,7 @@ private:
     void ConstructLab();
     void ConstructArikNDs();
     void ConstructRoom();
+    void ConstructSource();
 
     virtual void ConstructSDandField();
     void ApplyMessengers();
@@ -51,6 +52,10 @@ private:
     G4VPhysicalVolume* phys_ArikND2     = nullptr;
     G4LogicalVolume*   logic_ArikND_liq = nullptr;
     G4VPhysicalVolume* phys_ArikND_liq  = nullptr;
+
+    /* Source */
+    G4LogicalVolume*   logic_Source = nullptr;
+    G4VPhysicalVolume* phys_Source  = nullptr;
 
     // Material definitions
     G4Material* Air      = nullptr;
