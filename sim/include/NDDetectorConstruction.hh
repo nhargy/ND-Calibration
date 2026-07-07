@@ -65,7 +65,7 @@ private:
     G4Material* Steel    = nullptr;
 
     // Messengers
-    G4GenericMessenger* fMessengerWall = nullptr;
+    G4GenericMessenger* fMessengerGeo = nullptr;
     G4double wall_thickness = 0.;
     G4double source_iD      = 0.;
 };
